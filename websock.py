@@ -7,6 +7,7 @@ import codecs
 import json
 import random
 import time
+import asyncio
 
 class Room:
   def __init__(self, env, host, words, mode = "normal", maxplayers = 8, maxround = 15, roundtime = 120, password = "", **kwargs):
@@ -179,7 +180,7 @@ class WebSocketServer:
      self.clients = {} 
      self.args = kwargs 
 
-    def start(self): 
+    async def start(self): 
      """ 
      Start websocket server. 
      """ 
@@ -187,20 +188,22 @@ class WebSocketServer:
      self.root.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
      self.root.bind((self.host, self.port)) 
      self.root.listen(self.limit) 
+     self.root.setblocking(False)
      self.running = True 
 
      while self.running:
       try:
-        client, address = self.root.accept() 
+        client, address = await a_loop.sock_accept(self.root)
         if not self.running: break 
 
-        self.handshake(client) 
+        await self.handshake(client) 
         #self.clients.append((client, address)) 
 
         onconnect = self.args.get("onconnect") 
         if callable(onconnect): onconnect(self, client, address) 
 
-        threading.Thread(target=self.loop, args=(client, address)).start() 
+        a_loop.create_task(self.loop(client, address))
+        #threading.Thread(target=self.loop, args=(client, address)).start() 
       except KeyboardInterrupt:
         self.stop()
 
@@ -215,13 +218,13 @@ class WebSocketServer:
      self.running = False
 
 
-    def handshake(self, client): 
+    async def handshake(self, client): 
      handshake = 'HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Accept: %s\r\n\r\n' 
      handshake = self.args.get('handshake', handshake) 
      magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" 
      magic = self.args.get('magic', magic) 
 
-     header = str(client.recv(1000))
+     header = str(await a_loop.sock_recv(client, 1000))
      try: 
       res = header.index("Sec-WebSocket-Key") 
      except ValueError: 
@@ -231,18 +234,21 @@ class WebSocketServer:
      key = hashlib.sha1(key.encode()) 
      key = base64.b64encode(key.digest()) 
 
-     client.send(bytes((handshake % str(key,'utf-8')), 'utf-8')) 
+     client.send(bytes((handshake % str(key,'utf-8')), 'utf-8'))
+     print ("Handshake done")
      return True 
 
 
 
-    def loop(self, client, address): 
+    async def loop(self, client, address):
+      print ("Loop started")
       is_alive = True
       clientName = None
       while is_alive:
-        m = client.recv(16384)
+        m = await a_loop.sock_recv(client, 16384)
+        #m = client.recv(client, 16384)
         fin, text = self.decodeFrame(m)
-
+        
         if not fin: 
           onmessage = self.args.get('onmessage') 
           if callable(onmessage): 
@@ -496,6 +502,7 @@ def ondisconnect(self, clientName, address):
 
 
 
-sigServ = WebSocketServer("192.168.0.4", 7004, 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
+sigServ = WebSocketServer("websock-serv.herokuapp.com", 80, 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
 
-sigServ.start()
+a_loop = asyncio.get_event_loop()
+a_loop.run_until_complete(sigServ.start())
