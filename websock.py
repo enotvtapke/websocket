@@ -502,7 +502,7 @@ def ondisconnect(self, clientName, address):
 
 
 
-sigServ = WebSocketServer("websock-serv.herokuapp.com", 80, 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
+sigServ = WebSocketServer("0.0.0.0", 80, 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
 
 a_loop = asyncio.get_event_loop()
 a_loop.run_until_complete(sigServ.start())
