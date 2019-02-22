@@ -1,1 +1,1 @@
-web: python websock.py
+worker: python websock.py
