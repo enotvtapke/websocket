@@ -225,8 +225,9 @@ class WebSocketServer:
      handshake = self.args.get('handshake', handshake) 
      magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" 
      magic = self.args.get('magic', magic) 
-
+     print ("Try accept headers")
      header = str(await a_loop.sock_recv(client, 1000))
+     print ("Try accepted headers")
      try: 
       res = header.index("Sec-WebSocket-Key") 
      except ValueError: 
