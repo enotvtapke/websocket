@@ -228,6 +228,7 @@ class WebSocketServer:
      print ("Try accept header")
      header = str(await a_loop.sock_recv(client, 1000))
      print ("Accepted header")
+     print(header)
      try: 
       res = header.index("Sec-WebSocket-Key")
      except ValueError:
@@ -241,7 +242,8 @@ class WebSocketServer:
      print ("Sec-WebSocket-Key encoded with sha1")
      key = base64.b64encode(key.digest()) 
      print ("Sec-WebSocket-Key encoded to base 64")
-     print ("Handshake send")
+     print ("Handshake sending")
+     print(handshake % str(key,'utf-8'))
      client.send(bytes((handshake % str(key,'utf-8')), 'utf-8'))
      print ("Handshake done")
      return True 
