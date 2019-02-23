@@ -225,17 +225,20 @@ class WebSocketServer:
      handshake = self.args.get('handshake', handshake) 
      magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" 
      magic = self.args.get('magic', magic) 
-     print ("Try accept headers")
+     print ("Try accept header")
      header = str(await a_loop.sock_recv(client, 1000))
-     print ("Try accepted headers")
+     print ("Accepted header")
      try: 
       res = header.index("Sec-WebSocket-Key") 
      except ValueError: 
-      return False 
+      return False
+     print ("Accepted Sec-WebSocket-Key header")
      key = header[res + 19: res + 19 + 24] 
      key += magic 
      key = hashlib.sha1(key.encode()) 
+     print ("Sec-WebSocket-Key encoded with sha1")
      key = base64.b64encode(key.digest()) 
+     print ("Sec-WebSocket-Key encoded to base 64")
      print ("Handshake send")
      client.send(bytes((handshake % str(key,'utf-8')), 'utf-8'))
      print ("Handshake done")
