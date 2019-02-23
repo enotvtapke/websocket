@@ -226,11 +226,12 @@ class WebSocketServer:
      magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" 
      magic = self.args.get('magic', magic) 
      print ("Try accept header")
-     header = str(await a_loop.sock_recv(client, 1000)).split('\r\n')
+     header = str(await a_loop.sock_recv(client, 1000))
      print ("Accepted header")
      print(header)
      try: 
-      res = header.index("Sec-WebSocket-Key")
+      res = header.index("Sec-Websocket-Key")
+      print (res)
      except ValueError:
       print ("Value error")
       return False
