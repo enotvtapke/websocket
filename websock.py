@@ -8,6 +8,7 @@ import json
 import random
 import time
 import asyncio
+import os
 
 class Room:
   def __init__(self, env, host, words, mode = "normal", maxplayers = 8, maxround = 15, roundtime = 120, password = "", **kwargs):
@@ -502,7 +503,7 @@ def ondisconnect(self, clientName, address):
 
 
 
-sigServ = WebSocketServer("0.0.0.0", (process.env.PORT || 4000), 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
+sigServ = WebSocketServer("0.0.0.0", os.environ.get('PORT', 80), 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
 
 a_loop = asyncio.get_event_loop()
 a_loop.run_until_complete(sigServ.start())
