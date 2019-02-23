@@ -503,7 +503,7 @@ def ondisconnect(self, clientName, address):
 
 
 
-sigServ = WebSocketServer("0.0.0.0", os.environ.get('PORT', 80), 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
+sigServ = WebSocketServer("0.0.0.0", int(os.environ.get('PORT', 80)), 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
 
 a_loop = asyncio.get_event_loop()
 a_loop.run_until_complete(sigServ.start())
