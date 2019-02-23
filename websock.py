@@ -234,7 +234,8 @@ class WebSocketServer:
       return False
      print ("Accepted Sec-WebSocket-Key header")
      key = header[res + 19: res + 19 + 24] 
-     key += magic 
+     key += magic
+     print ("Try encode Sec-WebSocket-Key with sha1")
      key = hashlib.sha1(key.encode()) 
      print ("Sec-WebSocket-Key encoded with sha1")
      key = base64.b64encode(key.digest()) 
