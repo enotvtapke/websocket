@@ -217,7 +217,7 @@ class WebSocketServer:
     header = str(await a_loop.sock_recv(client, 1000))
     print(header)
     try: 
-      res = header.index("Sec-webSocket-Key")
+      res = header.index("Sec-Websocket-Key")
     except ValueError:
       print("Value error")
       return False
