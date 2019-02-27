@@ -108,7 +108,7 @@ class Room:
       self.timer.cancel()
     self.round = (self.round + 1) % (self.maxround + 1);
     await self.sendall('{"type":"roundstart", "round":"%s", "host":"%s"}' % (str(self.round), self.host))
-    self.sendWords()
+    await self.sendWords()
 
   def chooseWords(self, count):
     choosen = []
