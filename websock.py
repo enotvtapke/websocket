@@ -58,7 +58,7 @@ class Room:
     if self.online() == 2 and self.round == 0:
       await self.startRound()
 
-    self.updateScore(user)
+    await self.updateScore(user)
 
   async def kick(self, user):
     if self.online() <= 1: 
@@ -70,7 +70,7 @@ class Room:
       self.users.remove(user)
       print("Kicked user " + user)
       print("Current online: " + str(self.online()))
-      self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
+      await self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
       
       await self.startRound()
     else:
@@ -78,26 +78,26 @@ class Room:
         self.score.pop(user)
       self.users.remove(user)
       print("Kicked user " + user)
-      self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
+      await self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
 
   def changeHost(self):
     self.users.append(self.users.pop(0))
     self.host = self.users[0]
 
-  def send(self, user, msg):
+  async def send(self, user, msg):
     client = self.env.clients.get(user)
     if client == None:
-      self.kick(user)
+      await self.kick(user)
     else:
       self.env.sendto(client, msg)
 
-  def sendall(self, msg):
+  async def sendall(self, msg):
     for user in self.users:
-        self.send(user, msg)
+        await self.send(user, msg)
 
-  def updateScore(self, user, points = 0):
+  async def updateScore(self, user, points = 0):
     self.score[user] = int(points)
-    self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
+    await self.sendall('{"type":"players", "players":' + json.dumps(self.score) + '}')
 
   def online(self):
     return len(self.users)
@@ -107,7 +107,7 @@ class Room:
     if self.timer != None:
       self.timer.cancel()
     self.round = (self.round + 1) % (self.maxround + 1);
-    self.sendall('{"type":"roundstart", "round":"%s", "host":"%s"}' % (str(self.round), self.host))
+    await self.sendall('{"type":"roundstart", "round":"%s", "host":"%s"}' % (str(self.round), self.host))
     self.sendWords()
 
   def chooseWords(self, count):
@@ -119,14 +119,14 @@ class Room:
     self.choosedWords = choosen
     return choosen
 
-  def sendWords(self):
+  async def sendWords(self):
     if self.online() < 1: return 2
-    self.send(self.host, '{"type":"words", "words":' + json.dumps(self.chooseWords(3)) + '}')
+    await self.send(self.host, '{"type":"words", "words":' + json.dumps(self.chooseWords(3)) + '}')
     self.timer = Timer(7, self.sendKeyword)
 
   async def sendKeyword(self):
     word = self.choosedWords[random.randint(0, 2)]
-    self.send(self.host, '{"type":"keyword", "keyword":' + json.dumps(word) + '}')
+    await self.send(self.host, '{"type":"keyword", "keyword":' + json.dumps(word) + '}')
     self.onKeyword(word)
 
   def onKeyword(self, keyword):
@@ -145,7 +145,7 @@ class Room:
 
   async def endRound(self, winner = ""):
     print("endRound\n")
-    self.sendall('{"type":"roundend", "score":' + json.dumps(self.score) + ', "winner":"' + winner + '", "painter":"' + self.host + '", "keyword":"' + self.keyword + '", "lastround":"' + json.dumps(self.round == self.maxround) + '"}')
+    await self.sendall('{"type":"roundend", "score":' + json.dumps(self.score) + ', "winner":"' + winner + '", "painter":"' + self.host + '", "keyword":"' + self.keyword + '", "lastround":"' + json.dumps(self.round == self.maxround) + '"}')
     self.changeHost()
     self.timer = Timer(10, self.startRound)
 
@@ -395,7 +395,7 @@ async def onmessage (self, client, text):
       if room != None:
         room.onKeyword(jsontext["keyword"])
       else:
-        sself.sendto(client, '{"type":"keyword", "success":0}')
+        self.sendto(client, '{"type":"keyword", "success":0}')
         self.sendto(client, '{"type":"error", "error":"Room \'' + jsontext["room"] + '\' does not exist"}')
         return None
     else:
