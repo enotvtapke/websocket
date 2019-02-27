@@ -251,8 +251,8 @@ class WebSocketServer:
         ondisconnect = self.args.get('ondisconnect')
         if callable(ondisconnect): 
           await ondisconnect(self, clientName, address) 
-        client.close() 
-    return False
+        client.close()
+        return False
 
 
 
