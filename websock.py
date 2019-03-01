@@ -343,7 +343,6 @@ async def onmessage (self, client, text):
   jsontext = json.loads(text)
   mtype = jsontext["type"]
   if mtype == "ping":
-    print("Ping")
     self.sendto(client, '{"type":"pong"}')
   elif mtype == "login":
     if self.clients.get(jsontext["client"]) == None:
