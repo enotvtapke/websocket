@@ -235,7 +235,7 @@ class WebSocketServer:
     is_alive = True
     clientName = None
     while is_alive:
-      m = await a_loop.sock_recv(client, 16384)
+      m = await a_loop.sock_recv(client, bufsize)
       fin, text = self.decodeFrame(m)
       
       if not fin: 
