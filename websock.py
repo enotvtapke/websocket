@@ -236,7 +236,7 @@ class WebSocketServer:
     clientName = None
     while is_alive:
       m = await a_loop.sock_recv(client, 65536)
-      fin, text = self.decodeFrame(m)
+      fin, text = await self.decodeFrame(m)
       
       if not fin: 
         onmessage = self.args.get('onmessage') 
@@ -256,7 +256,7 @@ class WebSocketServer:
 
 
 
-  def decodeFrame(self, data): 
+  async def decodeFrame(self, data): 
     """
      0                   1                   2                   3
      0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
