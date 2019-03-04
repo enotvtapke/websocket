@@ -240,7 +240,7 @@ class WebSocketServer:
       
       if not fin: 
         onmessage = self.args.get('onmessage') 
-        if callable(onmessage): 
+        if callable(onmessage):
           clientName = await onmessage(self, client, text)
         else: 
           print("onmessage don`t callable")
