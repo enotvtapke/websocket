@@ -187,12 +187,11 @@ class WebSocketServer:
       try:
         client, address = await a_loop.sock_accept(self.root)
         if not self.running: break 
-        await self.handshake(client) 
+        if (await self.handshake(client)):
+          onconnect = self.args.get("onconnect") 
+          if callable(onconnect): onconnect(self, client, address) 
 
-        onconnect = self.args.get("onconnect") 
-        if callable(onconnect): onconnect(self, client, address) 
-
-        a_loop.create_task(self.loop(client, address))
+          a_loop.create_task(self.loop(client, address))
       except KeyboardInterrupt:
         self.stop()
 
