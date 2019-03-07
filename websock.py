@@ -112,7 +112,7 @@ class Room:
   def chooseWords(self, count):
     choosen = []
     for i in range(count):
-      choosen.append(self.env.words[random.randint(0, len(env.words) - 1)])
+      choosen.append(words[random.randint(0, len(words) - 1)])
     self.choosedWords = choosen
     return choosen
 
