@@ -28,7 +28,7 @@ class Timer:
       pass
 
 class Room:
-  def __init__(self, env, host, words, mode = "normal", maxplayers = 8, maxround = 15, roundtime = 120, password = "", **kwargs):
+  def __init__(self, env, host, mode = "normal", maxplayers = 8, maxround = 15, roundtime = 120, password = "", **kwargs):
     self.host = host
     self.users = [host]
     self.env = env
