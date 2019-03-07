@@ -208,7 +208,6 @@ class WebSocketServer:
 
 
   async def handshake(self, client):
-    print("Handshake")
     handshake = 'HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: websocket\r\nSec-WebSocket-Accept: %s\r\n\r\n' 
     handshake = self.args.get('handshake', handshake) 
     magic = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11" 
@@ -217,7 +216,6 @@ class WebSocketServer:
     try: 
       res = header.index("Sec-Websocket-Key")
     except ValueError:
-      print("Value error")
       return False
 
     key = header[res + 19: res + 19 + 24] 
