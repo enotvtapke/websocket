@@ -35,7 +35,6 @@ class Room:
 
     self.score = {host: 0}
     self.mode = mode
-    self.words = words
     self.round = 0
     self.maxround = int(maxround)
     self.roundtime = int(roundtime)
@@ -113,9 +112,8 @@ class Room:
   def chooseWords(self, count):
     choosen = []
     for i in range(count):
-      word = self.words.pop(0)
-      self.words.append(word)
-      choosen.append(word)
+      randint(0, len(self.env.words))
+      choosen.append(self.env.words[randint(0, len(env.words) - 1)])
     self.choosedWords = choosen
     return choosen
 
@@ -451,8 +449,9 @@ async def ondisconnect(self, clientName, address):
   print("User with IP " + address[0] + " and name '" + str(clientName) + "' disconnected")
   print("\n")
 
-
-
+with open('dictionary.txt', 'r', encoding='utf-8') as f:
+  words = f.read().split('\n')
+print('Words have been read')
 
 sigServ = WebSocketServer("0.0.0.0", int(os.environ.get('PORT', 80)), 4, **{"onmessage": onmessage, "onconnect": onconnect, "ondisconnect": ondisconnect})
 
