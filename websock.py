@@ -366,7 +366,7 @@ async def onmessage (self, client, text):
   elif mtype == "createroom":
     if self.clients.get(jsontext["client"]) != None:
       if rooms.get(jsontext["room"]) == None:
-        room = Room(self, host = jsontext["client"], words = json.loads(jsontext["words"]), roundtime = jsontext["roundtime"], maxround = jsontext["maxround"], mode = jsontext["mode"], maxplayers = jsontext["maxplayers"], password = jsontext["password"])
+        room = Room(self, host = jsontext["client"], roundtime = jsontext["roundtime"], maxround = jsontext["maxround"], mode = jsontext["mode"], maxplayers = jsontext["maxplayers"], password = jsontext["password"])
         rooms.update({jsontext["room"]: room})
         self.sendto(client, '{"type":"createroom", "success":1}')
       else:
