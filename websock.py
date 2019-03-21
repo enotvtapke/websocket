@@ -28,7 +28,7 @@ class Timer:
       pass
 
 class Room:
-  def __init__(self, env, host, mode = "normal", maxplayers = 8, maxround = 15, roundtime = 120, password = "", **kwargs):
+  def __init__(self, env, host, mode = "classic", maxplayers = 8, maxround = 15, roundtime = 120, words = [], password = "", **kwargs):
     self.host = host
     self.users = [host]
     self.env = env
@@ -41,6 +41,7 @@ class Room:
     self.maxplayers = int(maxplayers)
     self.choosedWords = []
     self.password = password
+    self.words = words if mode == "modded" else []
 
     self.keyword = None
 
@@ -112,7 +113,7 @@ class Room:
   def chooseWords(self, count):
     choosen = []
     for i in range(count):
-      choosen.append(words[random.randint(0, len(words) - 1)])
+      choosen.append(self.words[random.randint(0, len(self.words) - 1)] if mode == "modded" else words[random.randint(0, len(words) - 1)])
     self.choosedWords = choosen
     return choosen
 
@@ -366,7 +367,7 @@ async def onmessage (self, client, text):
   elif mtype == "createroom":
     if self.clients.get(jsontext["client"]) != None:
       if rooms.get(jsontext["room"]) == None:
-        room = Room(self, host = jsontext["client"], roundtime = jsontext["roundtime"], maxround = jsontext["maxround"], mode = jsontext["mode"], maxplayers = jsontext["maxplayers"], password = jsontext["password"])
+        room = Room(self, host = jsontext["client"], roundtime = jsontext["roundtime"], maxround = jsontext["maxround"], mode = jsontext["mode"], maxplayers = jsontext["maxplayers"], password = jsontext["password"], words = jsontext["words"])
         rooms.update({jsontext["room"]: room})
         self.sendto(client, '{"type":"createroom", "success":1}')
       else:
