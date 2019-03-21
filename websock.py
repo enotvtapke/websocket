@@ -41,7 +41,7 @@ class Room:
     self.maxplayers = int(maxplayers)
     self.choosedWords = []
     self.password = password
-    self.words = words if mode == "modded" else []
+    self.words = list(set(words)) if mode == "modded" else []
 
     self.keyword = None
 
