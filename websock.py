@@ -113,7 +113,12 @@ class Room:
   def chooseWords(self, count):
     choosen = []
     for i in range(count):
-      choosen.append(self.words[random.randint(0, len(self.words) - 1)] if self.mode == "modded" else words[random.randint(0, len(words) - 1)])
+      if self.mode == "modded":
+        word = self.words.pop(0)
+        choosen.append(word)
+        self.words.append(word)
+      else:
+        choosen.append(words[random.randint(0, len(words) - 1)])
     self.choosedWords = choosen
     return choosen
 
