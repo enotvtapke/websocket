@@ -302,8 +302,9 @@ class WebSocketServer:
 
 
 
-  def sendto(self, client, data, **kwargs):
-    print ("Send:")
+  def sendto(self, client, data, pong = False, **kwargs):
+    if !pong:
+      print ("Send:")
     """ 
     Send <b>data</b> to <b>client</b>. <b>data</b> can be of type <i>str</i>, <i>bytes</i>, <i>bytearray</i>, <i>int</i>. 
     :param client: Client socket for data exchange. 
@@ -332,8 +333,9 @@ class WebSocketServer:
     else: 
       head += bytes(127) 
       head += bytes(int.to_bytes(framelen, 8, 'big'))
-    print(head + frame)
-    print("\n") 
+    if !pong:
+      print(head + frame)
+      print("\n") 
     client.send(head + frame) 
 
 rooms = {}
@@ -345,7 +347,7 @@ async def onmessage (self, client, text):
     print("Message received: \n" + text + "\n")
 
   if mtype == "ping":
-    self.sendto(client, '{"type":"pong"}')
+    self.sendto(client, '{"type":"pong"}', pong = True)
   elif mtype == "login":
     if self.clients.get(jsontext["client"]) == None:
       self.clients.update({jsontext["client"]: client})
