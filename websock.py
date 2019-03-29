@@ -338,10 +338,12 @@ class WebSocketServer:
 
 rooms = {}
 async def onmessage (self, client, text):
-  print("Message received: \n" + text + "\n")
-
   jsontext = json.loads(text)
   mtype = jsontext["type"]
+
+  if mtype != "ping":
+    print("Message received: \n" + text + "\n")
+
   if mtype == "ping":
     self.sendto(client, '{"type":"pong"}')
   elif mtype == "login":
