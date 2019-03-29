@@ -303,7 +303,7 @@ class WebSocketServer:
 
 
   def sendto(self, client, data, pong = False, **kwargs):
-    if !pong:
+    if not(pong):
       print ("Send:")
     """ 
     Send <b>data</b> to <b>client</b>. <b>data</b> can be of type <i>str</i>, <i>bytes</i>, <i>bytearray</i>, <i>int</i>. 
@@ -333,7 +333,7 @@ class WebSocketServer:
     else: 
       head += bytes(127) 
       head += bytes(int.to_bytes(framelen, 8, 'big'))
-    if !pong:
+    if not(pong):
       print(head + frame)
       print("\n") 
     client.send(head + frame) 
