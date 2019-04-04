@@ -106,7 +106,7 @@ class Room:
     print("startRound\n")
     if self.timer != None:
       self.timer.cancel()
-    self.round = (self.round + 1) % (self.maxround + 1);
+    self.round = self.round % self.maxround + 1;
     await self.sendall('{"type":"roundstart", "round":"%s", "host":"%s"}' % (str(self.round), self.host))
     await self.sendWords()
 
